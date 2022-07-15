@@ -15,7 +15,7 @@ SAURUSS is a group project done at the [North Carolina State University](https:/
 - **Nipun Agarwal** ([LinkedIn](https://www.linkedin.com/in/nipun-agarwal-16052000/) - [GitHub](https://github.com/NipunAgarwal16))
 - **Dr. Ismail Guvenc** ([LinkedIn](https://www.linkedin.com/in/iguvenc/) - [Profile](https://ece.ncsu.edu/people/iguvenc/))
 - **Prof. Aranya Chakrabortty** ([Profile](https://ece.ncsu.edu/people/achakra2/))
-- 
+
 ### DEMO VIDEO
 https://user-images.githubusercontent.com/67196406/166443367-cc99dd4c-8b04-48ad-8701-01d4048b12a8.mp4
 ### OVERVIEW
