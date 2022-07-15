@@ -1,4 +1,4 @@
-# SAURUSS: IoT & 3D Project
+# SAURUSS: Testing Realtime Robustness of ROS in Autonomous Driving
 
 ## WHAT IS IT?
 **SAURUSS** stands for: **S**mart **A**utonomous **U**AV **R**ecognizer for **U**niversal **S**urveillance **S**ystem and it is a fully autonomous surveillance system that uses a drone and sensors to search and spot intruders over a perimeter.
@@ -10,11 +10,12 @@ This system employ:
 - A backend server (Raspberry Pi 1) to handle the users data
 
 ## ABOUT THE PROJECT
-SAURUSS is a group project developed for the course of [IoT & 3-D Systems (2020-2021)](https://offertaformativa.unimore.it/corso/insegnamento?cds_cod=20-262&aa_ord_id=2009&pds_cod=20-262-2&aa_off_id=2020&lang=ita&ad_cod=IIM-63&aa_corso=1&fac_id=10005&coorte=2020&anno_corrente=2022&durata=2) done at the [University of Modena and Reggio Emilia](https://www.ingmo.unimore.it/site/en/home.html).
+SAURUSS is a group project done at the [North Carolina State University](https://www.ncsu.edu/).
 #### Team Members:
-- **Candeloro Ettore** ([LinkedIn](https://www.linkedin.com/in/ettore-candeloro-900081162/) - [GitHub](https://github.com/e-candeloro))
-- **Garuti Thomas** ([LinkedIn](https://www.linkedin.com/in/thomas-garuti-135649196/) - [GitHub](https://github.com/Thomas-Garuti))
-- **Millunzi Monica** ([LinkedIn](https://www.linkedin.com/in/monica-millunzi-1b70411b1/) - [GitHub](https://github.com/monnieka))
+- **Nipun Agarwal** ([LinkedIn](https://www.linkedin.com/in/nipun-agarwal-16052000/) - [GitHub](https://github.com/NipunAgarwal16))
+- **Dr. Ismail Guvenc** ([LinkedIn](https://www.linkedin.com/in/iguvenc/) - [Profile](https://ece.ncsu.edu/people/iguvenc/))
+- **Prof. Aranya Chakrabortty** ([Profile](https://ece.ncsu.edu/people/achakra2/))
+- 
 ### DEMO VIDEO
 https://user-images.githubusercontent.com/67196406/166443367-cc99dd4c-8b04-48ad-8701-01d4048b12a8.mp4
 ### OVERVIEW
