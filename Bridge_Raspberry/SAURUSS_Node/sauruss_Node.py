@@ -26,5 +26,5 @@ class Node:
     def set_coordinates(self):
         pass
 
-    def set_distances(self,user_name, password, mac):
+    def set_distances(self, user_name, password, mac):
         pass

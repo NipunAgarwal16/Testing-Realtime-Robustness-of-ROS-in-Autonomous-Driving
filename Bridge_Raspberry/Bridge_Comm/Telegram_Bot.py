@@ -1,4 +1,10 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    CallbackContext,
+)
 from telegram import Update
 from threading import Thread
 import threading
@@ -12,8 +18,10 @@ class Bot(Thread):
     def __init__(self):
 
         Thread.__init__(self)
-        logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        )
 
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
@@ -23,7 +31,7 @@ class Bot(Thread):
         global Input_Symb
         global sense_mode
         """Send a message when the command /start is issued."""
-        update.message.reply_text('Setting Sensors ON')
+        update.message.reply_text("Setting Sensors ON")
         print("\n\n\n\n\n\nON Message Received!")
         Input_Symb = sense_mode  # Cambia il simbolo di input della FSM ad "ON"
 
@@ -38,7 +46,7 @@ class Bot(Thread):
         global Input_Symb
         global off
         """Send a message when the command /help is issued."""
-        update.message.reply_text('Shutting Sensors OFF')
+        update.message.reply_text("Shutting Sensors OFF")
         print("\n\n\n\n\n\nOFF Message Received!")
         Input_Symb = off  # Cambia il simbolo di input della FSM ad "OFF"
 
@@ -46,9 +54,15 @@ class Bot(Thread):
         global chatID
         global BOTKEY
 
-        send_text = 'https://api.telegram.org/bot' + BOTKEY + '/sendMessage?chat_id=' + str(chatID) \
-                    + '&parse_mode=Markdown&text=' + \
-                    "Warning, drone activated!\nSensor: " + str(sensor_id)
+        send_text = (
+            "https://api.telegram.org/bot"
+            + BOTKEY
+            + "/sendMessage?chat_id="
+            + str(chatID)
+            + "&parse_mode=Markdown&text="
+            + "Warning, drone activated!\nSensor: "
+            + str(sensor_id)
+        )
 
         response = requests.get(send_text)
 
@@ -58,8 +72,14 @@ class Bot(Thread):
         global chatID
         global BOTKEY
 
-        send_text = 'https://api.telegram.org/bot' + BOTKEY + '/sendMessage?chat_id=' + str(chatID) \
-                    + '&parse_mode=Markdown&text=' + str(message)
+        send_text = (
+            "https://api.telegram.org/bot"
+            + BOTKEY
+            + "/sendMessage?chat_id="
+            + str(chatID)
+            + "&parse_mode=Markdown&text="
+            + str(message)
+        )
 
         response = requests.get(send_text)
 
@@ -75,14 +95,16 @@ class Bot(Thread):
         string = update.message.text.split(" ")
         print(f"il bot mi ha letto il messaggio: {string}")
 
-        if (len(string) == 3 and string[0] == config):
+        if len(string) == 3 and string[0] == config:
             Input_Symb = config
             user_name = string[1]
             password = string[2]
             sendmessage = "Ricevuto!\nSto tentando di autenticarti :)"
             self.updater.bot.send_message(chat_id=chatID, text=sendmessage)
             print(
-                "\n\n\n\n\n\nReceveid CONFIG command from authenticated user: " + str(user_name))
+                "\n\n\n\n\n\nReceveid CONFIG command from authenticated user: "
+                + str(user_name)
+            )
         else:
             errmessage = "Errore di SETUP\nUsare: CONFIG user password"
             self.updater.bot.send_message(chat_id=chatID, text=errmessage)
@@ -100,7 +122,8 @@ class Bot(Thread):
         dp.add_handler(CommandHandler("OFF", self.OFF_Command))
 
         # add an handler for messages
-        dp.add_handler(MessageHandler(Filters.text & ~
-        Filters.command, self.get_new_message))
+        dp.add_handler(
+            MessageHandler(Filters.text & ~Filters.command, self.get_new_message)
+        )
         self.updater.start_polling()
         self.updater.idle()

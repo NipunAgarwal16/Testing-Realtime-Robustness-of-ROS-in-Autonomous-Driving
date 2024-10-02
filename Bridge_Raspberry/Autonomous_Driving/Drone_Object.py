@@ -5,6 +5,7 @@ import time
 
 # This class is for the movements of Tello when the ArUco pose estimation is running
 
+
 class DroneObject:
 
     # initialize the object

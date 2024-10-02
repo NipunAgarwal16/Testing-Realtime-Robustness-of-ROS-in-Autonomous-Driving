@@ -8,6 +8,7 @@ from Autonomous_Driving import Drone_Object
 import numpy as np
 import threading
 import time
+
 """ This file is the core of the decisions of Tello drone.
     From here start the "reasoning" structure.
     It tell to the drone the entire procedure of the mission that it has to do.
@@ -82,10 +83,14 @@ def mission_tello(mac, user_name, password):
         tello.takeoff()
         tello.go_xyz_speed(x, y, 0, V)
 
-    distance_to_fly = np.sqrt(x ** 2 + y ** 2)
+    distance_to_fly = np.sqrt(x**2 + y**2)
 
-    print(str((tello.get_flight_time() - time_to_start) * V) + "<=" + str(distance_to_fly))
-    while (tello.get_flight_time() - time_to_start) * V <= distance_to_fly:  # if im not arrived yet
+    print(
+        str((tello.get_flight_time() - time_to_start) * V) + "<=" + str(distance_to_fly)
+    )
+    while (
+        tello.get_flight_time() - time_to_start
+    ) * V <= distance_to_fly:  # if im not arrived yet
         # if a person is found
         if Drone_State.int_state == 3:
             break
@@ -96,7 +101,9 @@ def mission_tello(mac, user_name, password):
     if first_recognition.is_alive():
         first_recognition.join()
 
-    print(str((tello.get_flight_time() - time_to_start) * V) + ">=" + str(distance_to_fly))
+    print(
+        str((tello.get_flight_time() - time_to_start) * V) + ">=" + str(distance_to_fly)
+    )
     time_of_rotation = 0  # sec
 
     if not Alarm_State.alarm_state:  # no person found yet
@@ -119,14 +126,24 @@ def mission_tello(mac, user_name, password):
 
     time_of_return_to_home = tello.get_flight_time()
 
-    print(str((tello.get_flight_time() - time_of_return_to_home - time_of_rotation) * V) + "<=" + str(distance_to_fly))
+    print(
+        str((tello.get_flight_time() - time_of_return_to_home - time_of_rotation) * V)
+        + "<="
+        + str(distance_to_fly)
+    )
     # while i'm not arrived to home
-    while (tello.get_flight_time() - time_of_return_to_home - time_of_rotation) * V <= distance_to_fly:
+    while (
+        tello.get_flight_time() - time_of_return_to_home - time_of_rotation
+    ) * V <= distance_to_fly:
         # if a person is found
         if Drone_State.int_state == 3:
             break
     Drone_State.no_person()
-    print(str((tello.get_flight_time() - time_of_return_to_home - time_of_rotation) * V) + ">=" + str(distance_to_fly))
+    print(
+        str((tello.get_flight_time() - time_of_return_to_home - time_of_rotation) * V)
+        + ">="
+        + str(distance_to_fly)
+    )
 
     if second_recognition.isAlive():
         second_recognition.join()
@@ -150,4 +167,3 @@ def mission_tello(mac, user_name, password):
         tello.land()
     tello.streamoff()
     print("Adios!")
-
