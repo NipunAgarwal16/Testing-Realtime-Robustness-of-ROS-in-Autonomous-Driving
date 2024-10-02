@@ -1,5 +1,6 @@
 """ This State machine is used for the reasoning of the drone.
 """
+
 str_state = "IDLE"
 int_state = 0
 
@@ -34,4 +35,3 @@ def person_found():
 
     str_state = "Person Already Found"
     int_state = 3
-

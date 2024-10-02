@@ -21,14 +21,14 @@ import time
 
 # from Autonomous_Driving import Mission_Thread
 
-BOTKEY = ''  # removed for security
+BOTKEY = ""  # removed for security
 chatID = 000  # removed for security
 
 
 user_name = None  # variabile per username per la configurazione dei mac address
 password = None  # variabile per password per la configurazione dei mac address
 
-server = '' #removed for security 
+server = ""  # removed for security
 test_dict = {}
 
 # dizionario con chiave id sensore e valore MAC address del sensore,
@@ -76,9 +76,8 @@ def Get_MAC_list(user_name, password):
 
     S = requests.Session()
 
-    post = S.post(server +
-                  str(user_name) + "/" + str(password))
-    if (post.status_code == requests.codes.ok):
+    post = S.post(server + str(user_name) + "/" + str(password))
+    if post.status_code == requests.codes.ok:
         result = S.get(server)
         result = json.loads(result.text)["Sensors"]
 
@@ -111,20 +110,21 @@ def non_block_read(output):
 def Setup_BT_connections(mac_dict):
     print("Trying to setup BT connection for devices:")
 
-    stop_hc0 = subprocess.run(['sudo', 'hciconfig', 'hci0', 'down'],
-                              capture_output=True)
+    stop_hc0 = subprocess.run(
+        ["sudo", "hciconfig", "hci0", "down"], capture_output=True
+    )
     print("Turning off rfcomm host...")
     time.sleep(5)
 
     print("Turning back on rfcomm host...")
-    start_hc0 = subprocess.run(['sudo', 'hciconfig', 'hci0', 'up'],
-                               capture_output=True)
+    start_hc0 = subprocess.run(["sudo", "hciconfig", "hci0", "up"], capture_output=True)
     time.sleep(5)
     print("Releasing rfcomm past connections...")
     # resest delle connessioni rfcomm
     for i, mac in mac_dict.items():
-        proc_rel = subprocess.run(['sudo', 'rfcomm', 'release', str(i)],
-                                  capture_output=True)
+        proc_rel = subprocess.run(
+            ["sudo", "rfcomm", "release", str(i)], capture_output=True
+        )
     time.sleep(0.5)
 
     # scan dei dispositivi bluetooth finchè tutti i sensori sulla
@@ -136,10 +136,9 @@ def Setup_BT_connections(mac_dict):
         time.sleep(1)
         # scan dei dispositivi bluetooth
         print("Scanning BT devices...")
-        proc_scan = subprocess.run(['hcitool', 'scan'],
-                                   stdout=subprocess.PIPE)
+        proc_scan = subprocess.run(["hcitool", "scan"], stdout=subprocess.PIPE)
         # print(proc_scan.stdout.decode('utf-8'))
-        line = (proc_scan.stdout.decode('utf-8')).split('\n')
+        line = (proc_scan.stdout.decode("utf-8")).split("\n")
         line.pop(0)
 
         for devices in line:
@@ -151,8 +150,11 @@ def Setup_BT_connections(mac_dict):
     # creazione delle porte rfcomm per i vari sensori nella lista mac
     for i, mac in mac_dict.items():
 
-        sb = Popen("sudo rfcomm connect " + str(i) + " " +
-                   str(mac) + " " + str(1), shell=True, stdout=PIPE)
+        sb = Popen(
+            "sudo rfcomm connect " + str(i) + " " + str(mac) + " " + str(1),
+            shell=True,
+            stdout=PIPE,
+        )
         time.sleep(2)
         sb.kill()
         sb.poll()
@@ -161,15 +163,16 @@ def Setup_BT_connections(mac_dict):
         time.sleep(2)
 
         # controllo di avvenuta creazione con successo della connessione
-        proc = subprocess.run(['sudo', 'rfcomm', '-a'],
-                              capture_output=True, shell=False)
+        proc = subprocess.run(
+            ["sudo", "rfcomm", "-a"], capture_output=True, shell=False
+        )
 
         time.sleep(2)
 
-        if str(mac) in (proc.stdout.decode('utf-8')):
+        if str(mac) in (proc.stdout.decode("utf-8")):
             print("Enstablished connection with sensor " + str(i))
         else:
-            print(proc.stderr.decode('utf-8'))
+            print(proc.stderr.decode("utf-8"))
             print("Something went wrong connecting to sensor: " + str(i))
             print("Restarting connection process for all sensors...")
             Setup_BT_connections(mac_dict)
@@ -208,11 +211,11 @@ def Setup_Serials():  # open serial port
     for id, port in enumerate(valid_ports):
 
         if str(id) in port.device.lower():
-            print("connecting to sensor: " +
-                  str(id) + " with port: " + str(port.device))
+            print(
+                "connecting to sensor: " + str(id) + " with port: " + str(port.device)
+            )
             try:
-                sensor_serial = serial.Serial(
-                    port.device, 9600, timeout=0)
+                sensor_serial = serial.Serial(port.device, 9600, timeout=0)
                 sensor_dict[id] = [test_dict[id], port.device, sensor_serial]
                 print(sensor_dict[id])
                 time.sleep(1)
@@ -222,8 +225,11 @@ def Setup_Serials():  # open serial port
                 return False
 
     print("Success!")
-    print("Serial connections enstablished for " +
-          str(len(sensor_dict.keys())) + " sensors")
+    print(
+        "Serial connections enstablished for "
+        + str(len(sensor_dict.keys()))
+        + " sensors"
+    )
     # print(sensor_dict)
     return True
 
@@ -232,7 +238,7 @@ def Bridge_Config():
     # if Setup_BT_connections(test_dict):
     #    print("Successfully connected to all sensors!")
     #    print(test_dict)
-    if (Setup_Serials()):
+    if Setup_Serials():
         print(sensor_dict)
         return True
     else:
@@ -245,8 +251,8 @@ def Update_State():
     global Future_State
     global Input_Symb
 
-    if (Present_State == wait):
-        if (Input_Symb == config):
+    if Present_State == wait:
+        if Input_Symb == config:
             Future_State = config
             print("START BRIDGE CONFIG...")
             return
@@ -254,8 +260,8 @@ def Update_State():
             Future_State = wait
             return
 
-    elif (Present_State == config):
-        if (Input_Symb == setup_ok):
+    elif Present_State == config:
+        if Input_Symb == setup_ok:
             Future_State = off
             print("BRIDGE NOW IN IDLE...")
             return
@@ -263,8 +269,8 @@ def Update_State():
             Future_State = config
             return
 
-    elif (Present_State == off):
-        if (Input_Symb == sense_mode):
+    elif Present_State == off:
+        if Input_Symb == sense_mode:
             print("TURNING ON SENSORS...")
             Future_State = sense_mode
             return
@@ -272,20 +278,20 @@ def Update_State():
             Future_State = off
             return
 
-    elif (Present_State == sense_mode):
-        if (Input_Symb == alert):
+    elif Present_State == sense_mode:
+        if Input_Symb == alert:
             print("ALERT RECEIVED!")
             Future_State = alert
             return
-        elif (Input_Symb == off):
+        elif Input_Symb == off:
             Future_State = off
             print("TURNING OFF SENSORS...")
             return
         else:
             Future_State = sense_mode
             return
-    elif (Present_State == alert):
-        if (Input_Symb == sense_mode):
+    elif Present_State == alert:
+        if Input_Symb == sense_mode:
             print("RETURNING TO SENSING AFTER COOLDOWN...")
             Future_State = sense_mode
             return
@@ -300,7 +306,7 @@ def On_Enter_Actions():
     global Present_State
     global Future_State
 
-    if (Present_State == sense_mode and Future_State == off):
+    if Present_State == sense_mode and Future_State == off:
 
         if BR.Set_Sensors_OFF():
             print("Turned OFF sensors")
@@ -309,7 +315,7 @@ def On_Enter_Actions():
             print("Error turning OFF sensors")
             return
 
-    elif (Present_State == off and Future_State == sense_mode):
+    elif Present_State == off and Future_State == sense_mode:
 
         if BR.Set_Sensors_ON():
             print("Turned ON sensors")
@@ -317,8 +323,7 @@ def On_Enter_Actions():
             return
         else:
             print("Error turning OFF sensors")
-            miobot.send_bot_message(
-                "Errore di accensione dei sensori...\nRiprovare")
+            miobot.send_bot_message("Errore di accensione dei sensori...\nRiprovare")
             return
     else:
         return
@@ -332,10 +337,10 @@ def Update_Output():
     global password
     global miobot
 
-    if (Present_State == wait):
+    if Present_State == wait:
         pass
 
-    elif (Present_State == config):
+    elif Present_State == config:
         if Get_MAC_list(user_name, password) is not None:
             if Bridge_Config():
                 Input_Symb = setup_ok
@@ -347,11 +352,11 @@ def Update_Output():
             print("Server connection Error!!!")
             return
 
-    elif (Present_State == sense_mode):
+    elif Present_State == sense_mode:
         (id_returned, MAC_returned) = BR.Listen_for_Alert()
         print("Id_returned: " + str(id_returned))
         print("Mac_returned: " + str(MAC_returned))
-        if (MAC_returned is not None and id_returned is not None):
+        if MAC_returned is not None and id_returned is not None:
             print("Sending Telegram Message and activating Drone!!!")
             print("Username: " + str(user_name))
             print("Password: " + str(password))
@@ -360,7 +365,7 @@ def Update_Output():
             Input_Symb = alert
             return
 
-    elif (Present_State == alert):
+    elif Present_State == alert:
         Input_Symb = sense_mode
         return
         # passa subito al sense una volta terminato lo script di Tello
@@ -369,13 +374,13 @@ def Update_Output():
 class Bridge:
 
     def __init__(self):
-        self.header = b'\xff'
-        self.footer = b'\xfe'
-        self.ack = b'\x01'
-        self.off_sensor = b'\xaa'
-        self.alert = b'\x02'
+        self.header = b"\xff"
+        self.footer = b"\xfe"
+        self.ack = b"\x01"
+        self.off_sensor = b"\xaa"
+        self.alert = b"\x02"
         self.packet_len = 4
-        self.ack_pakcet = b'\xff\x01\xfe'
+        self.ack_pakcet = b"\xff\x01\xfe"
 
     def Sensor_ON(self, sens_id, sensor_info):
 
@@ -383,10 +388,10 @@ class Bridge:
         sensor_port.reset_output_buffer()
         print("Sending ON signal to sensor: " + str(sens_id))
 
-        bsens_id = sens_id.to_bytes(1, byteorder='little')
-        data = (self.header + bsens_id + self.footer)
+        bsens_id = sens_id.to_bytes(1, byteorder="little")
+        data = self.header + bsens_id + self.footer
 
-        while (True):
+        while True:
 
             sensor_port.write(data)
             time.sleep(2)
@@ -404,9 +409,9 @@ class Bridge:
 
         print("Sending OFF signal to sensor: " + str(sens_id))
 
-        data = (self.header + self.off_sensor + self.footer)
+        data = self.header + self.off_sensor + self.footer
 
-        while (True):
+        while True:
 
             sensor_port.write(data)
             time.sleep(2)
@@ -455,13 +460,15 @@ class Bridge:
         if len(buffer) < (self.packet_len):  # at least header, size, footer
             return (-1, -1)
         # split parts
-        if buffer[0] != self.header:  # se il pacchetto contiene solo il footer, lo scarto!
+        if (
+            buffer[0] != self.header
+        ):  # se il pacchetto contiene solo il footer, lo scarto!
             return (-1, -1)
 
         # converto il byte in un int nella parte del pacchetto che mi dice il payload
-        sensor_id = int.from_bytes(buffer[1], byteorder='little')
+        sensor_id = int.from_bytes(buffer[1], byteorder="little")
         # converto in byte il payload partendo dalla posizione 2
-        payload = int.from_bytes(buffer[2], byteorder='little')
+        payload = int.from_bytes(buffer[2], byteorder="little")
         print("sensor_id = " + str(sensor_id))
         print("payload = " + str(payload))
 
@@ -480,7 +487,7 @@ class Bridge:
 
         timer = time.perf_counter()
 
-        while (time.perf_counter() - timer <= 1):
+        while time.perf_counter() - timer <= 1:
 
             if sensor_ser.in_waiting > 0:
                 # data available from the serial port
@@ -491,7 +498,8 @@ class Bridge:
                     buffer.append(lastchar)
                     print("\nValue received")
                     Sensor_ID, payload = self.useData(
-                        buffer)  # chiama il metodo useData
+                        buffer
+                    )  # chiama il metodo useData
                     print(buffer)
                     buffer = []  # svuota buffer+
                     break
@@ -529,7 +537,7 @@ class Bridge:
 
             (id_received, payload) = self.ReadPacket(sens_port)
 
-            if (id_received == -1 and payload == -1):
+            if id_received == -1 and payload == -1:
                 print("Nothing interesting to read")
 
             if payload == alert_payload:
@@ -546,7 +554,7 @@ class Bridge:
             return (None, None)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # Inizializza con un thread lo script bot telegram
     # Questo script invia i messaggi all'utente in caso di alarme
@@ -557,7 +565,7 @@ if __name__ == '__main__':
 
     BR = Bridge()  # inizializza l'oggetto bridge
 
-    while (True):  # ciclo infinito per la macchina a stati finiti
+    while True:  # ciclo infinito per la macchina a stati finiti
 
         print("---------------------------------------------")
 

@@ -13,7 +13,7 @@ This system employ:
 SAURUSS is a group project done at the [North Carolina State University](https://www.ncsu.edu/).
 #### Team Members:
 - **Nipun Agarwal** ([LinkedIn](https://www.linkedin.com/in/nipun-agarwal-16052000/) - [GitHub](https://github.com/NipunAgarwal16))
-- **Dr. Ismail Guvenc** ([LinkedIn](https://www.linkedin.com/in/iguvenc/) - [Profile](https://ece.ncsu.edu/people/iguvenc/))
+- **Dr. Ismail Guvenc** ([Profile](https://ece.ncsu.edu/people/iguvenc/))
 - **Prof. Aranya Chakrabortty** ([Profile](https://ece.ncsu.edu/people/achakra2/))
 
 ### DEMO VIDEO

@@ -24,18 +24,18 @@ area_recognition_RTH = None
 confidenceThreshold = 0.4
 nmsThreshold = 0.3
 
-classesFile = 'coco.names'
+classesFile = "coco.names"
 
 
 def init(MAC):
     global area_recognition_mission
     global area_recognition_RTH
-    dir = '../Object_Detection/'
-    with open(dir + classesFile, 'rt') as f:
-        classNames = f.read().rstrip('\n').split('\n')
+    dir = "../Object_Detection/"
+    with open(dir + classesFile, "rt") as f:
+        classNames = f.read().rstrip("\n").split("\n")
 
-    modelConfiguration = dir + 'yolov3-tiny.cfg'
-    modelWeights = dir + 'yolov3-tiny.weights'
+    modelConfiguration = dir + "yolov3-tiny.cfg"
+    modelWeights = dir + "yolov3-tiny.weights"
 
     net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
@@ -62,26 +62,31 @@ class Recognition(Thread):
 
             frame = frame_read.frame
             text = "Battery: {}%".format(tello.get_battery())
-            cv2.putText(frame, text, (5, 720 - 5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(
+                frame, text, (5, 720 - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2
+            )
 
             img = cv2.resize(frame, (640, 480))
 
-            blob = cv2.dnn.blobFromImage(img, 1 / 255, (640, 480), [0, 0, 0], 1, crop=False)
+            blob = cv2.dnn.blobFromImage(
+                img, 1 / 255, (640, 480), [0, 0, 0], 1, crop=False
+            )
             self.net.setInput(blob)
 
             layerNames = self.net.getLayerNames()
-            outputNames = [layerNames[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
+            outputNames = [
+                layerNames[i[0] - 1] for i in self.net.getUnconnectedOutLayers()
+            ]
             # array of probability for each object
             outputs = self.net.forward(outputNames)
 
             self.findObject(outputs, img, self.id)
 
             ################################################################
-            cv2.imshow('Tello detection...', img)
+            cv2.imshow("Tello detection...", img)
 
             # this is for safe debug mode
-            if cv2.waitKey(1) == ord('q'):
+            if cv2.waitKey(1) == ord("q"):
                 tello.land()
                 tello.streamoff()
                 break
@@ -117,8 +122,15 @@ class Recognition(Thread):
                 box = bbox[i]
                 x, y, w, h = box[0], box[1], box[2], box[3]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
-                cv2.putText(img, f'{self.class_names[classIds[i]].upper()} {int(confs[i] * 100)}%',
-                            (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+                cv2.putText(
+                    img,
+                    f"{self.class_names[classIds[i]].upper()} {int(confs[i] * 100)}%",
+                    (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (255, 0, 255),
+                    2,
+                )
 
                 for j in classIds:
                     if j == 0:  # person
@@ -126,13 +138,22 @@ class Recognition(Thread):
                         for k in range(0, 2):
                             Session_Service.sendAlarmBySensorID(sensor_id)
 
-                        cv2.putText(img, f'{self.class_names[j].upper()} {int(confs[i] * 100)}%',
-                                    (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                        cv2.putText(
+                            img,
+                            f"{self.class_names[j].upper()} {int(confs[i] * 100)}%",
+                            (x, y - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.6,
+                            (255, 0, 0),
+                            2,
+                        )
 
                         print("WARNING! PERSON DETECTED!")
                         cv2.imwrite("picture.png", img)
                         timer = time.perf_counter()
-                        video = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (640, 480))
+                        video = cv2.VideoWriter(
+                            "video.mp4", cv2.VideoWriter_fourcc(*"mp4v"), 30, (640, 480)
+                        )
                         frame_read = tello.get_frame_read()
                         while time.perf_counter() - timer < 3:
                             image = cv2.resize(frame_read.frame, (640, 480))
@@ -147,7 +168,9 @@ class Recognition(Thread):
 
 
 def sendProof(sensor_id):
-    result_set = json.loads(Session_Service.getTimestampsOfAlarms(sensor_id))["Timestamps"]
+    result_set = json.loads(Session_Service.getTimestampsOfAlarms(sensor_id))[
+        "Timestamps"
+    ]
 
     timestamp_img = str(result_set[0]["timestamp"].split(" ")[1].replace(":", ""))
     timestamp_vid = str(result_set[1]["timestamp"].split(" ")[1].replace(":", ""))

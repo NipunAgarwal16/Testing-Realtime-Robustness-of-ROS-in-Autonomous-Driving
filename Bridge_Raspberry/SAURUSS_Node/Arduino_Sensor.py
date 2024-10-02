@@ -20,7 +20,6 @@ class Arduino_Sensor(Node):
     def get_coordinates(self):
         return super(Arduino_Sensor, self).get_coordinates()
 
-
     def set_MAC(self, MAC):
         super().set_MAC(MAC)
 
@@ -37,12 +36,12 @@ class Arduino_Sensor(Node):
         try:
             if Session_Service.doLogin(user_name, password) == 200:
 
-                JSONObject = json.loads(Session_Service.getDistances())['Distances']
+                JSONObject = json.loads(Session_Service.getDistances())["Distances"]
 
                 for i in JSONObject:  # i = {'sensor':x, 'x_axis':y, 'y_axis':z}
-                    distances_vector.append(i['sensor'])
-                    distances_vector.append(i['x_axis'])
-                    distances_vector.append(i['y_axis'])
+                    distances_vector.append(i["sensor"])
+                    distances_vector.append(i["x_axis"])
+                    distances_vector.append(i["y_axis"])
 
                 distances_matrix = np.array(distances_vector)
                 distances_matrix = distances_matrix.reshape(-1, 3)

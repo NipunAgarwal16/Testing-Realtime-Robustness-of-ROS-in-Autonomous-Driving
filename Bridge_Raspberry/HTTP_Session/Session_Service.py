@@ -5,17 +5,19 @@ import requests
 # an alarm occur.
 
 s = requests.Session()
-URI = "" #url to the web served removed for security purposes
+URI = ""  # url to the web served removed for security purposes
 
 
 def doLogin(username, password):
-    return s.post(URI + f'login/{username}/{password}/').status_code
+    return s.post(URI + f"login/{username}/{password}/").status_code
+
 
 def doLogout():
-    return s.get(URI + f'logout/').status_code
+    return s.get(URI + f"logout/").status_code
+
 
 def getDistances():
-    return s.get(URI + 'distances/').text
+    return s.get(URI + "distances/").text
 
 
 def sendAlarmBySensorID(sensor_id):

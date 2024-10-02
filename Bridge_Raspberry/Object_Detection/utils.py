@@ -9,8 +9,8 @@ import subprocess
 def connection():
     results = subprocess.check_output(["netsh", "wlan", "show", "network"])
 
-    results = results.decode("ascii") # needed in python 3
-    results = results.replace("\r","")
+    results = results.decode("ascii")  # needed in python 3
+    results = results.replace("\r", "")
     ls = results.split("\n")
     ls = ls[4:]
     ssids = []
@@ -22,12 +22,16 @@ def connection():
         x += 1
     ssids = [name for ssid in ssids for name in ssid]
     if ssids.__contains__("O-TELLO"):
-        if check_output("netsh wlan connect name=O-TELLO", shell=True).decode() == "Richiesta di connessione completata.\r\n" :
+        if (
+            check_output("netsh wlan connect name=O-TELLO", shell=True).decode()
+            == "Richiesta di connessione completata.\r\n"
+        ):
             print("Connessione a Tello stabilita")
         else:
             print("Impossibile stabilire connessione")
     else:
         print("Tello non attivo")
+
 
 """
 

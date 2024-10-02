@@ -8,12 +8,20 @@ import cv2 as cv
     I have left this code for future use.
 """
 
+
 class Tello:
     """
     Handles connection to the DJI Tello drone
     """
 
-    def __init__(self, local_ip, local_port, is_dummy=False, tello_ip='192.168.10.1', tello_port=8889):
+    def __init__(
+        self,
+        local_ip,
+        local_port,
+        is_dummy=False,
+        tello_ip="192.168.10.1",
+        tello_port=8889,
+    ):
         """
         Initializes connection with Tello and sends both command and streamon instructions
         in order to start it and begin receiving video feed.
@@ -29,15 +37,15 @@ class Tello:
             self.tello_address = (tello_ip, tello_port)
             self.local_address = (local_ip, local_port)
 
-            self.send_command('command')
+            self.send_command("command")
             # self.socket.sendto(b'command', self.tello_address)
-            print('[INFO] Sent Tello: command')
-            self.send_command('streamon')
+            print("[INFO] Sent Tello: command")
+            self.send_command("streamon")
             # self.socket.sendto(b'streamon', self.tello_address)
-            print('[INFO] Sent Tello: streamon')
-            #self.send_command('takeoff')
-            self.socket.sendto(b'takeoff', self.tello_address)
-            print('[INFO] Sent Tello: takeoff')
+            print("[INFO] Sent Tello: streamon")
+            # self.send_command('takeoff')
+            self.socket.sendto(b"takeoff", self.tello_address)
+            print("[INFO] Sent Tello: takeoff")
             self.move_up(160)
 
             # thread for receiving cmd ack
@@ -62,7 +70,7 @@ class Tello:
             try:
                 self.response, ip = self.socket.recvfrom(3000)
             except socket.error as exc:
-                print (f"Caught exception socket.error: {exc}")
+                print(f"Caught exception socket.error: {exc}")
 
     def send_command(self, command):
         """
@@ -73,18 +81,18 @@ class Tello:
         self.abort_flag = False
         timer = threading.Timer(0.5, self.set_abort_flag)
 
-        self.socket.sendto(command.encode('utf-8'), self.tello_address)
+        self.socket.sendto(command.encode("utf-8"), self.tello_address)
 
         timer.start()
         while self.response is None:
             if self.abort_flag is True:
                 break
         timer.cancel()
-        
+
         if self.response is None:
-            response = 'none_response'
+            response = "none_response"
         else:
-            response = self.response.decode('utf-8')
+            response = self.response.decode("utf-8")
 
         self.response = None
 
@@ -95,7 +103,7 @@ class Tello:
         Sends a command without expecting a response. Useful when sending a lot of commands.
         """
         if not self.is_dummy:
-            self.socket.sendto(command.encode('utf-8'), self.tello_address)
+            self.socket.sendto(command.encode("utf-8"), self.tello_address)
 
     def set_abort_flag(self):
         """
@@ -112,7 +120,7 @@ class Tello:
         :param dist: Distance in centimeters in the range 20 - 500.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'up {dist}')
+        self.send_command_without_response(f"up {dist}")
 
     def move_down(self, dist):
         """
@@ -120,7 +128,7 @@ class Tello:
         :param dist: Distance in centimeters in the range 20 - 500.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'down {dist}')
+        self.send_command_without_response(f"down {dist}")
 
     def move_right(self, dist):
         """
@@ -128,7 +136,7 @@ class Tello:
         :param dist: Distance in centimeters in the range 20 - 500.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'right {dist}')
+        self.send_command_without_response(f"right {dist}")
 
     def move_left(self, dist):
         """
@@ -136,21 +144,21 @@ class Tello:
         :param dist: Distance in centimeters in the range 20 - 500.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'left {dist}')
+        self.send_command_without_response(f"left {dist}")
 
     def move_forward(self, dist):
         """
         Sends forward command to Tello without expecting a return.
         :param dist: Distance in centimeters in the range 20 - 500.
         """
-        self.send_command_without_response(f'forward {dist}')
+        self.send_command_without_response(f"forward {dist}")
 
     def move_backward(self, dist):
         """
         Sends backward command to Tello without expecting a return.
         :param dist: Distance in centimeters in the range 20 - 500.
         """
-        self.send_command_without_response(f'back {dist}')
+        self.send_command_without_response(f"back {dist}")
 
     def rotate_cw(self, deg):
         """
@@ -158,7 +166,7 @@ class Tello:
         :param deg: Degrees bewteen 0 - 360.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'cw {deg}')
+        self.send_command_without_response(f"cw {deg}")
 
     def rotate_ccw(self, deg):
         """
@@ -166,14 +174,14 @@ class Tello:
         :param deg: Degrees bewteen 0 - 360.
         :return (str): Response from Tello
         """
-        self.send_command_without_response(f'ccw {deg}')
-    
+        self.send_command_without_response(f"ccw {deg}")
+
     def get_udp_video_address(self):
         """
         Gets the constructed udp video address for the drone
         :return (str): The constructed udp video address
         """
-        return f'udp://{self.tello_address[0]}:11111'
+        return f"udp://{self.tello_address[0]}:11111"
 
     def get_frame_read(self):
         """
@@ -185,7 +193,9 @@ class Tello:
             if self.is_dummy:
                 self.background_frame_read = BackgroundFrameRead(self, 0).start()
             else:
-                self.background_frame_read = BackgroundFrameRead(self, self.get_udp_video_address()).start()
+                self.background_frame_read = BackgroundFrameRead(
+                    self, self.get_udp_video_address()
+                ).start()
         return self.background_frame_read
 
     def get_video_capture(self):
@@ -213,13 +223,14 @@ class Tello:
         """
         # print(self.send_command('battery?'))
         if not self.is_dummy:
-            self.send_command('land')
+            self.send_command("land")
         if self.background_frame_read is not None:
             self.background_frame_read.stop()
-        # It appears that the VideoCapture destructor releases the capture, hence when 
+        # It appears that the VideoCapture destructor releases the capture, hence when
         # attempting to release it manually, a segmentation error occurs.
         # if self.cap is not None:
         #     self.cap.release()
+
 
 class BackgroundFrameRead:
     """

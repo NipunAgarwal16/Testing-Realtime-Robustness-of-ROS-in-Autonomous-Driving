@@ -15,8 +15,8 @@ class Raspberry_Home(Node):
     def get_MAC(self):
         super().get_MAC()
 
-    def set_distances(self, us,ps,mac):
-        super().set_distances(us,ps,mac)
+    def set_distances(self, us, ps, mac):
+        super().set_distances(us, ps, mac)
 
     def set_coordinates(self):
         super().set_coordinates()
